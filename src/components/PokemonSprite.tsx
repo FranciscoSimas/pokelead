@@ -48,6 +48,7 @@ export function PokemonSprite({
       width={width}
       height={height}
       className={className}
+      style={{ imageRendering: "pixelated" }}
       unoptimized
       loading="lazy"
       onError={() => setBroken(true)}

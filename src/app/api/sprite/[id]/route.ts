@@ -37,7 +37,7 @@ export async function GET(
     const buf = await img.arrayBuffer();
     return new Response(buf, {
       headers: {
-        "Content-Type": img.headers.get("Content-Type") || "image/png",
+        "Content-Type": img.headers.get("Content-Type") || "image/gif",
         "Cache-Control":
           "public, max-age=604800, s-maxage=2592000, stale-while-revalidate=86400",
         "X-PokeLead-Sprite": target,
@@ -48,7 +48,7 @@ export async function GET(
       const fallback = await fetch(spriteUrl(dex, shiny), { next: { revalidate: 86400 } });
       return new Response(await fallback.arrayBuffer(), {
         headers: {
-          "Content-Type": "image/png",
+          "Content-Type": "image/gif",
           "Cache-Control": "public, max-age=86400, s-maxage=86400",
         },
       });

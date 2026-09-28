@@ -71,19 +71,19 @@ export function toPokeApiName(speciesId: string): string {
   return s;
 }
 
-const ART =
+const SHOWDOWN =
   "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown";
 
-/** Dex-only artwork (default form). */
+/** Dex-only Showdown GIF (default form). */
 export function spriteUrl(dex: number, shiny = false): string {
-  return shiny ? `${ART}/shiny/${dex}.png` : `${ART}/${dex}.png`;
+  return shiny ? `${SHOWDOWN}/shiny/${dex}.gif` : `${SHOWDOWN}/${dex}.gif`;
 }
 
 export function spriteUrlSmall(dex: number): string {
-  return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${dex}.png`;
+  return spriteUrl(dex);
 }
 
-/** Form-aware artwork URL via our resolver (falls back to dex). */
+/** Form-aware sprite URL via our resolver (falls back to dex). */
 export function formSpriteUrl(speciesId: string, dex: number, shiny = false): string {
   const clean = speciesId.replace(/_shadow$/i, "");
   const base = clean.replace(/_xs$/i, "") || String(dex);
@@ -92,6 +92,7 @@ export function formSpriteUrl(speciesId: string, dex: number, shiny = false): st
   return `/api/sprite/${encodeURIComponent(base)}?${q.toString()}`;
 }
 
+/** Showdown GIF by PokeAPI pokemon id (includes form variants). */
 export function artworkByPokeId(pokeApiId: number, shiny = false): string {
-  return shiny ? `${ART}/shiny/${pokeApiId}.png` : `${ART}/${pokeApiId}.png`;
+  return shiny ? `${SHOWDOWN}/shiny/${pokeApiId}.gif` : `${SHOWDOWN}/${pokeApiId}.gif`;
 }
