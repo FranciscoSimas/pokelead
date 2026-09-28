@@ -72,7 +72,7 @@ export function toPokeApiName(speciesId: string): string {
 }
 
 const ART =
-  "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork";
+  "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown";
 
 /** Dex-only artwork (default form). */
 export function spriteUrl(dex: number, shiny = false): string {
