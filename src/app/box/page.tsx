@@ -104,6 +104,7 @@ export default function BoxPage() {
   );
   const [q, setQ] = useState("");
   const [selected, setSelected] = useState<GmPokemon | null>(null);
+  const [selectedShiny, setSelectedShiny] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [cp, setCp] = useState(1500);
   const [atk, setAtk] = useState(0);
@@ -293,8 +294,9 @@ export default function BoxPage() {
     );
   }, [gm, powerMon]);
 
-  function pick(p: GmPokemon) {
+  function pick(p: GmPokemon, shiny = false) {
     setSelected(p);
+    setSelectedShiny(shiny);
     setQ(p.speciesName);
     setOpen(false);
     setFast(p.fastMoves[0] ?? "");
@@ -305,6 +307,7 @@ export default function BoxPage() {
   function resetForm() {
     setQ("");
     setSelected(null);
+    setSelectedShiny(false);
     setEditingId(null);
     setFormTags("");
     setOpen(false);
@@ -340,6 +343,7 @@ export default function BoxPage() {
     setCharged1(p.chargedMoves[0] ?? "");
     setCharged2(p.chargedMoves[1] ?? "");
     setFormTags((p.tags ?? []).join(", "));
+    setSelectedShiny(Boolean(p.flags.shiny));
     setOpen(false);
     setFormOpen(true);
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -365,7 +369,7 @@ export default function BoxPage() {
       hpIv: hp,
       fastMove: fast || undefined,
       chargedMoves: [charged1, charged2].filter(Boolean),
-      flags: { ...(existing?.flags ?? DEFAULT_FLAGS), shadow },
+      flags: { ...(existing?.flags ?? DEFAULT_FLAGS), shadow, shiny: selectedShiny },
       tags,
     };
     if (editingId) {
@@ -544,7 +548,7 @@ export default function BoxPage() {
                             speciesId={p.speciesId}
                             dex={p.dex}
                             shadow={isShadow(p)}
-                            onPick={() => pick(p)}
+                            onPick={(shiny) => pick(p, shiny)}
                             name={baseName(p)}
                             subtitle={formBadge(p)}
                           />
@@ -565,13 +569,28 @@ export default function BoxPage() {
                     height={48}
                     className="h-12 w-12 object-contain"
                     shadow={isShadow(selected)}
+                    shiny={selectedShiny}
                   />
                   <div className="min-w-0 flex-1">
                     <p className="font-semibold text-white">{baseName(selected)}</p>
                     <p className="text-xs text-muted">
                       #{selected.dex} · {formBadge(selected)}
+                      {selectedShiny ? " · Shiny" : ""}
                     </p>
                   </div>
+                  <button
+                    type="button"
+                    aria-pressed={selectedShiny}
+                    onClick={() => setSelectedShiny((s) => !s)}
+                    className={`grid h-8 w-8 place-items-center rounded border text-sm font-bold ${
+                      selectedShiny
+                        ? "border-accent/50 bg-accent/25 text-accent"
+                        : "border-line bg-surface-2 text-faint"
+                    }`}
+                    title={selectedShiny ? "Shiny on" : "Shiny off"}
+                  >
+                    ★
+                  </button>
                   {draftRank && <IvRankBadge result={draftRank} compact />}
                   <button type="button" onClick={resetForm} className="btn btn-quiet px-2 py-1 text-xs">
                     Change
@@ -825,6 +844,7 @@ export default function BoxPage() {
                       height={64}
                       className="h-14 w-14 shrink-0 object-contain"
                       shadow={p.flags.shadow}
+                      shiny={p.flags.shiny}
                     />
                     <div className="min-w-0 flex-1">
                       <p className="truncate font-semibold text-white">

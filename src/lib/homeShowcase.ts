@@ -6,6 +6,8 @@ export type ShowcaseMon = {
   speciesName: string;
   /** Primary type — drives site accent when this mon is favorite #1. */
   primaryType?: string;
+  /** Showdown shiny sprite when true. */
+  shiny?: boolean;
 };
 
 export type ShowcaseTrio = [ShowcaseMon, ShowcaseMon, ShowcaseMon];
@@ -29,6 +31,7 @@ function isShowcaseMon(v: unknown): v is ShowcaseMon {
     return false;
   }
   if (o.primaryType != null && typeof o.primaryType !== "string") return false;
+  if (o.shiny != null && typeof o.shiny !== "boolean") return false;
   return true;
 }
 

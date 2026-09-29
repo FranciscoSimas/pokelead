@@ -91,10 +91,10 @@ Critério de done: tu próprio abres a Box e **não** queres esconder os filtros
 |------|--------|
 | **Include Evos / Powered (Teams)** | ✅ Done: separate EVOs + Powered toggles |
 | **Top 3 favoritos** (onboarding / settings) | ✅ Theme from #1 type (Home + Account); not in score |
-| **Build around favorite** | Opcional / leve depois do tema |
-| **Keep / invest / transfer** por cup | Badge na card da box |
+| **Build around favorite** | ❌ Skip — não vamos fazer |
+| **Keep / invest / transfer** por cup | Badge na card da box ← **próximo** |
 | **XL + Best Buddy no IV rank** | ✅ L51 + buddy cap wired |
-| **Mesma espécie: qual guardar?** | Comparar N Blastoise na box |
+| **Mesma espécie: qual guardar?** | Comparar N Blastoise na box (junto com keep/invest) |
 
 Isto é o que faz “esforço + pessoal” sem precisar de simular 1000 battles.
 
@@ -135,7 +135,7 @@ Só depois do PvP “wow”.
 
 - Header / home com os 3 sprites
 - Accent color derivado do tipo dominante do #1 (subtile)
-- Teams: atalho “Build around [favorite]”
+- Teams: atalho “Build around [favorite]” — **skip**
 - Recommend: ligeiro boost se o mon é favorito (ou só UI highlight)
 - Empty box: “Começa por adicionar o teu [favorite]”
 
@@ -147,12 +147,12 @@ Só depois do PvP “wow”.
 
 1. **Frontend redesign** (Fase 0) ✅  
 2. Top 3 favoritos + home pessoal (tema, não draft) ✅  
-3. Keep / invest / compare same species  
+3. Keep / invest / compare same species ← **agora**  
 4. Matriz matchups vs meta  
 5. Share + export  
 6. Battle (próprio ou deep-link)
 
-*(Include Evos no Teams já feito, à parte desta ordem de personalização.)*
+*(Include Evos no Teams já feito. Build around favorite: skip.)*
 
 ---
 

@@ -25,6 +25,7 @@ export type Database = {
           flag_lucky: boolean;
           flag_purified: boolean;
           flag_shadow: boolean;
+          flag_shiny: boolean;
           flag_xl: boolean;
           form_label: string | null;
           hp_iv: number;
@@ -50,6 +51,7 @@ export type Database = {
           flag_lucky?: boolean;
           flag_purified?: boolean;
           flag_shadow?: boolean;
+          flag_shiny?: boolean;
           flag_xl?: boolean;
           form_label?: string | null;
           hp_iv: number;
@@ -75,6 +77,7 @@ export type Database = {
           flag_lucky?: boolean;
           flag_purified?: boolean;
           flag_shadow?: boolean;
+          flag_shiny?: boolean;
           flag_xl?: boolean;
           form_label?: string | null;
           hp_iv?: number;

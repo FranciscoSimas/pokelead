@@ -135,6 +135,7 @@ export function ScreenshotImport({
         lucky: boolean;
         bestBuddy: boolean;
         xl: boolean;
+        shiny: boolean;
       };
       chargedMoves: string[];
       fastMove?: string;
@@ -590,6 +591,7 @@ export function ScreenshotImport({
           lucky: d.lucky,
           bestBuddy: false,
           xl: false,
+          shiny: false,
         },
         fastMove: d.fastMove || undefined,
         chargedMoves: [d.charged1, d.charged2].filter(Boolean),

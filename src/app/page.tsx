@@ -177,6 +177,7 @@ export default function HomePage() {
                   height={160}
                   className="h-full w-full object-contain drop-shadow-xl"
                   shadow={shadow}
+                  shiny={Boolean(mon.shiny)}
                 />
                 <span className="pointer-events-none absolute inset-x-1 bottom-1.5 rounded-full bg-ink/70 py-0.5 text-center text-[10px] font-semibold text-fg opacity-0 transition group-hover:opacity-100 group-focus-visible:opacity-100">
                   Change

@@ -183,6 +183,7 @@ function BoxPickGrid({
               width={56}
               height={56}
               className="h-12 w-12 object-contain"
+              shiny={Boolean(mon.flags.shiny)}
             />
             <span className="mt-0.5 line-clamp-2 w-full text-[7px] leading-tight text-[#1a1208]" style={ink()}>
               {mon.flags.shadow ? "S " : ""}
@@ -478,6 +479,7 @@ export default function RetroLabPage() {
                                 height={56}
                                 className="h-12 w-12 object-contain drop-shadow-[2px_2px_0_rgba(0,0,0,0.35)]"
                                 shadow={shadow}
+                                shiny={Boolean(mon.shiny)}
                               />
                             </div>
                             <p className="text-[7px] leading-tight text-[#1a1208]" style={ink()}>
@@ -583,6 +585,7 @@ export default function RetroLabPage() {
                               width={48}
                               height={48}
                               className="h-11 w-11 object-contain"
+                              shiny={Boolean(mon.flags.shiny)}
                             />
                           </div>
                           <div className="min-w-0">
@@ -617,6 +620,7 @@ export default function RetroLabPage() {
                             width={72}
                             height={72}
                             className="h-16 w-16 object-contain"
+                            shiny={Boolean(selectedBox.flags.shiny)}
                           />
                           <div>
                             <p className="text-[10px] text-[#1a1208]" style={ink()}>
@@ -716,6 +720,7 @@ export default function RetroLabPage() {
                             width={80}
                             height={80}
                             className="h-[4.5rem] w-[4.5rem] object-contain"
+                            shiny={Boolean(mon.flags.shiny)}
                           />
                         ) : (
                           <span className="text-[8px] text-[#1a1208]" style={ink()}>
@@ -792,6 +797,7 @@ export default function RetroLabPage() {
                           width={88}
                           height={88}
                           className="h-20 w-20 object-contain"
+                          shiny={Boolean(analyzeMon.flags.shiny)}
                         />
                       </div>
                       <div>

@@ -122,6 +122,7 @@ export function buildLabPokemon(
   format: FormatOption,
   slotKey: string,
   role?: RankEntry[],
+  shiny = false,
 ): BoxPokemon {
   const shadow =
     isShadowId(rankingId) || (gm.tags ?? []).some((t) => t.toLowerCase() === "shadow");
@@ -142,7 +143,7 @@ export function buildLabPokemon(
     hpIv: ivs[2],
     fastMove: fast,
     chargedMoves: charged,
-    flags: { ...DEFAULT_FLAGS, shadow },
+    flags: { ...DEFAULT_FLAGS, shadow, shiny },
     note: "lab",
     createdAt: 0,
     updatedAt: 0,

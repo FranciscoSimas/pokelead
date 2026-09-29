@@ -41,6 +41,7 @@ export function fromBoxRow(row: BoxRow): BoxPokemon {
       lucky: row.flag_lucky,
       bestBuddy: row.flag_best_buddy,
       xl: row.flag_xl,
+      shiny: row.flag_shiny ?? false,
     },
     tags: row.tags ?? [],
     note: row.note ?? undefined,
@@ -70,6 +71,7 @@ export function toBoxInsert(userId: string, p: BoxPokemon): TablesInsert<"box_po
     flag_lucky: p.flags.lucky,
     flag_best_buddy: p.flags.bestBuddy,
     flag_xl: p.flags.xl,
+    flag_shiny: p.flags.shiny,
     tags: p.tags ?? [],
     note: p.note ?? null,
     screenshot_path: p.screenshotPath ?? null,
@@ -125,7 +127,7 @@ export async function fetchRemoteBox(): Promise<BoxPokemon[] | null> {
   const { data, error } = await supabase
     .from("box_pokemon")
     .select(
-      "id,user_id,species_id,species_name,dex,form_label,cp,atk_iv,def_iv,hp_iv,level,fast_move,charged_moves,flag_shadow,flag_purified,flag_lucky,flag_best_buddy,flag_xl,tags,note,screenshot_path,created_at,updated_at",
+      "id,user_id,species_id,species_name,dex,form_label,cp,atk_iv,def_iv,hp_iv,level,fast_move,charged_moves,flag_shadow,flag_purified,flag_lucky,flag_best_buddy,flag_xl,flag_shiny,tags,note,screenshot_path,created_at,updated_at",
     )
     .order("created_at", { ascending: false })
     .limit(2000);

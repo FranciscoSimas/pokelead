@@ -182,6 +182,7 @@ export default function AnalyzePage() {
               height={160}
               className="object-contain"
               shadow={selected.flags.shadow}
+              shiny={Boolean(selected.flags.shiny)}
             />
             <p className="text-center text-xl font-bold text-white">
               {selected.flags.shadow ? "Shadow " : ""}

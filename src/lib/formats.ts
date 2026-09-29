@@ -48,7 +48,7 @@ const SEASON_WEEKS: { start: string; end: string; featuredIds: string[] }[] = [
   {
     start: "2026-09-29",
     end: "2026-10-06",
-    featuredIds: ["all-10000", "color-1500", "mega-1500"],
+    featuredIds: ["all-10000", "color-1500"],
   },
   {
     start: "2026-10-06",
@@ -68,7 +68,7 @@ const SEASON_WEEKS: { start: string; end: string; featuredIds: string[] }[] = [
   {
     start: "2026-10-27",
     end: "2026-11-03",
-    featuredIds: ["all-10000", "halloween-1500", "mega-1500"],
+    featuredIds: ["all-10000", "halloween-1500"],
   },
   {
     start: "2026-11-03",
@@ -88,7 +88,7 @@ const SEASON_WEEKS: { start: string; end: string; featuredIds: string[] }[] = [
   {
     start: "2026-11-24",
     end: "2026-12-02",
-    featuredIds: ["all-10000", "catch-1500", "mega-1500"],
+    featuredIds: ["all-10000", "catch-1500"],
   },
 ];
 
@@ -152,8 +152,9 @@ const EXTRA_CUPS: FormatOption[] = [
     id: "catch-1500",
     cup: "catch",
     rankingCup: "catch",
-    label: "Catch Cup (GL)",
+    label: "Mega Catch Cup: Great League Edition",
     cp: 1500,
+    rules: ["≤1500 CP", "Caught this season", "Megas OK", "No Mythicals"],
   },
   {
     id: "naic2026-1500",
@@ -209,7 +210,7 @@ const EXTRA_CUPS: FormatOption[] = [
     id: "color-1500",
     cup: "color",
     rankingCup: "color",
-    label: "Mega Color Cup (GL)",
+    label: "Mega Color Cup: Great League Edition",
     cp: 1500,
     rules: ["≤1500 CP", "Grass / Fire / Water / Electric", "Megas OK"],
   },
@@ -217,7 +218,7 @@ const EXTRA_CUPS: FormatOption[] = [
     id: "halloween-1500",
     cup: "halloween",
     rankingCup: "halloween",
-    label: "Mega Halloween Cup (GL)",
+    label: "Mega Halloween Cup: Great League Edition",
     cp: 1500,
     rules: ["≤1500 CP", "Bug / Poison / Ghost / Dark / Fairy", "Megas OK"],
   },

@@ -15,6 +15,8 @@ export type PokemonFlags = {
   lucky: boolean;
   bestBuddy: boolean;
   xl: boolean;
+  /** Visual only — Showdown shiny sprite. */
+  shiny: boolean;
 };
 
 export type BoxPokemon = {
@@ -80,6 +82,7 @@ export const DEFAULT_FLAGS: PokemonFlags = {
   lucky: false,
   bestBuddy: false,
   xl: false,
+  shiny: false,
 };
 
 export const FORMATS: FormatOption[] = [

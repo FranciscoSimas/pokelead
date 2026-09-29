@@ -78,7 +78,7 @@ export function HomeShowcasePicker({
       .slice(0, 48);
   }, [gm, q]);
 
-  function pick(p: GmPokemon) {
+  function pick(p: GmPokemon, shiny: boolean) {
     const types = (p.types ?? [])
       .map((t) => t.toLowerCase())
       .filter((t) => t && t !== "none");
@@ -87,6 +87,7 @@ export function HomeShowcasePicker({
       dex: p.dex,
       speciesName: baseName(p),
       primaryType: types[0],
+      shiny: shiny || undefined,
     });
     onClose();
   }
@@ -135,7 +136,7 @@ export function HomeShowcasePicker({
                   speciesId={p.speciesId}
                   dex={p.dex}
                   shadow={isShadow(p)}
-                  onPick={() => pick(p)}
+                  onPick={(shiny) => pick(p, shiny)}
                   name={baseName(p)}
                   subtitle={formBadge(p)}
                 />

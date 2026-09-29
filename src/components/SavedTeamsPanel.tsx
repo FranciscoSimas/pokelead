@@ -124,6 +124,7 @@ export function SavedTeamsPanel({
                         height={36}
                         className="h-9 w-9"
                         shadow={m.flags?.shadow}
+                        shiny={Boolean(m.flags?.shiny)}
                       />
                     ))}
                   </div>

@@ -164,7 +164,15 @@ export default function TeamsPage() {
         if (!gmm) return mon;
         const roleList =
           slot === "lead" ? lists.leads : slot === "switch" ? lists.switches : lists.closers;
-        const lab = buildLabPokemon(rankingId, gmm, lists.overall, format, slot, roleList);
+        const lab = buildLabPokemon(
+          rankingId,
+          gmm,
+          lists.overall,
+          format,
+          slot,
+          roleList,
+          Boolean(mon.flags.shiny),
+        );
         if (lab.cp > format.cp) return null;
         return lab;
       }
@@ -850,6 +858,7 @@ function Slot({
           height={96}
           className="relative h-16 w-16 object-contain drop-shadow-[0_6px_12px_rgba(0,0,0,0.5)] sm:h-24 sm:w-24"
           shadow={mon.flags.shadow}
+          shiny={mon.flags.shiny}
         />
       </div>
 

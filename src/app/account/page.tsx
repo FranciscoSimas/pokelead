@@ -318,6 +318,7 @@ function FavoritesEditor({
                 height={64}
                 className="mt-3 h-14 w-14 object-contain"
                 shadow={shadow}
+                shiny={Boolean(mon.shiny)}
               />
               <span className="mt-1 line-clamp-1 w-full text-xs font-semibold text-white">
                 {mon.speciesName}

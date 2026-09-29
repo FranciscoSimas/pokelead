@@ -166,6 +166,7 @@ export function PowerModal({
               height={64}
               className="h-14 w-14 object-contain"
               shadow={mon.flags.shadow}
+              shiny={Boolean(mon.flags.shiny)}
             />
             <div>
               <p className="text-[10px] font-bold uppercase tracking-wider text-sky-200/55">

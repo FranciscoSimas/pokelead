@@ -188,15 +188,17 @@ export function TeamMonPicker({
       .slice(0, 40);
   }, [gm, roleList, q, isEligible, roleMap, overallMap, includeEvos]);
 
-  function pickBox(p: BoxPokemon) {
-    onChange(p);
+  function pickBox(p: BoxPokemon, shiny: boolean) {
+    onChange({ ...p, flags: { ...p.flags, shiny } });
     setOpen(false);
     setQ("");
   }
 
-  function pickAny(rankingId: string, mon: GmPokemon) {
+  function pickAny(rankingId: string, mon: GmPokemon, shiny: boolean) {
     if (!gm) return;
-    onChange(buildLabPokemon(rankingId, mon, overall, format, label.toLowerCase(), roleList));
+    onChange(
+      buildLabPokemon(rankingId, mon, overall, format, label.toLowerCase(), roleList, shiny),
+    );
     setOpen(false);
     setQ("");
   }
@@ -239,6 +241,7 @@ export function TeamMonPicker({
               height={40}
               className="h-10 w-10 object-contain"
               shadow={value.flags.shadow}
+              shiny={value.flags.shiny}
             />
             <span className="min-w-0 flex-1">
               <span className="flex items-center gap-1">
@@ -354,7 +357,8 @@ export function TeamMonPicker({
                       shadow={p.flags.shadow}
                       selected={value?.id === p.id}
                       disabled={taken}
-                      onPick={() => pickBox(p)}
+                      onPick={(shiny) => pickBox(p, shiny)}
+                      initialShiny={Boolean(p.flags.shiny)}
                       spriteClassName="h-14 w-14 object-contain sm:h-16 sm:w-16"
                       name={
                         <>
@@ -407,7 +411,7 @@ export function TeamMonPicker({
                     speciesId={row.gm.speciesId}
                     dex={row.gm.dex}
                     shadow={shadow}
-                    onPick={() => pickAny(row.rankingId, row.gm)}
+                    onPick={(shiny) => pickAny(row.rankingId, row.gm, shiny)}
                     spriteClassName="h-14 w-14 object-contain sm:h-16 sm:w-16"
                     name={
                       <>

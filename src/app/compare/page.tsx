@@ -54,6 +54,7 @@ function SideCard({
           height={88}
           className="h-20 w-20 object-contain"
           shadow={mon.flags.shadow}
+          shiny={Boolean(mon.flags.shiny)}
         />
         <div className="min-w-0 space-y-1">
           <p className="truncate text-lg font-bold text-white">

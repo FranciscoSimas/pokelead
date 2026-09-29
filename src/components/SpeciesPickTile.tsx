@@ -12,16 +12,17 @@ type Props = {
   shadow?: boolean;
   selected?: boolean;
   disabled?: boolean;
-  onPick: () => void;
+  onPick: (shiny: boolean) => void;
   className?: string;
   spriteClassName?: string;
   /** Extra line under subtitle (ranks, CP, …). */
   footer?: ReactNode;
+  /** Start with shiny ★ on (e.g. re-picking an already-shiny box mon). */
+  initialShiny?: boolean;
 };
 
 /**
- * Species cell for choose-Pokémon modals: optional shiny ★ toggle (top-right).
- * Shiny preview is visual-only and does not change the pick payload.
+ * Species cell for choose-Pokémon modals: ★ toggles shiny and is included in the pick.
  */
 export function SpeciesPickTile({
   speciesId,
@@ -35,8 +36,9 @@ export function SpeciesPickTile({
   className = "",
   spriteClassName = "mt-3 h-14 w-14 object-contain",
   footer,
+  initialShiny = false,
 }: Props) {
-  const [shiny, setShiny] = useState(false);
+  const [shiny, setShiny] = useState(initialShiny);
 
   return (
     <div
@@ -52,7 +54,7 @@ export function SpeciesPickTile({
     >
       <button
         type="button"
-        aria-label={shiny ? "Hide shiny preview" : "Show shiny preview"}
+        aria-label={shiny ? "Use normal colors" : "Use shiny"}
         aria-pressed={shiny}
         disabled={disabled}
         onClick={(e) => {
@@ -72,7 +74,7 @@ export function SpeciesPickTile({
       <button
         type="button"
         disabled={disabled}
-        onClick={onPick}
+        onClick={() => onPick(shiny)}
         className="flex min-h-0 flex-1 flex-col items-center px-1.5 pb-1.5 pt-1 active:scale-[0.98] disabled:pointer-events-none"
       >
         <span className="absolute left-1.5 top-1.5 text-[10px] font-semibold text-faint">
