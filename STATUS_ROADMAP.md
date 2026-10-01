@@ -92,6 +92,7 @@ Critério de done: tu próprio abres a Box e **não** queres esconder os filtros
 | **Include Evos / Powered (Teams)** | ✅ Done: separate EVOs + Powered toggles |
 | **Top 3 favoritos** (onboarding / settings) | ✅ Theme from #1 type (Home + Account); not in score |
 | **Build around favorite** | ❌ Skip — não vamos fazer |
+| **Find in GO (search strings)** | ✅ Top-50 role dex union + IV band presets → copy/paste in PoGo |
 | **Keep / invest / transfer** por cup | Badge na card da box ← **próximo** |
 | **XL + Best Buddy no IV rank** | ✅ L51 + buddy cap wired |
 | **Mesma espécie: qual guardar?** | Comparar N Blastoise na box (junto com keep/invest) |
@@ -147,10 +148,11 @@ Só depois do PvP “wow”.
 
 1. **Frontend redesign** (Fase 0) ✅  
 2. Top 3 favoritos + home pessoal (tema, não draft) ✅  
-3. Keep / invest / compare same species ← **agora**  
-4. Matriz matchups vs meta  
-5. Share + export  
-6. Battle (próprio ou deep-link)
+3. Find in GO (PoGo search strings) ✅  
+4. Keep / invest / compare same species ← **agora**  
+5. Matriz matchups vs meta  
+6. Share + export  
+7. Battle (próprio ou deep-link)
 
 *(Include Evos no Teams já feito. Build around favorite: skip.)*
 

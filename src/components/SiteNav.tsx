@@ -72,6 +72,15 @@ function CompareIcon({ className }: IconProps) {
   );
 }
 
+function SearchIcon({ className }: IconProps) {
+  return (
+    <Stroke className={className}>
+      <circle cx="10.5" cy="10.5" r="5.5" />
+      <path d="M15.2 15.2 20 20" />
+    </Stroke>
+  );
+}
+
 function PixelIcon({ className }: IconProps) {
   return (
     <Stroke className={className}>
@@ -89,13 +98,20 @@ const NAV: {
 }[] = [
   { href: "/", label: "Home", short: "Home", Icon: HomeIcon },
   { href: "/box", label: "My Box", short: "Box", Icon: BoxIcon },
+  { href: "/search", label: "Find in GO", short: "GO", Icon: SearchIcon },
   { href: "/teams", label: "Teams", short: "Teams", Icon: TeamIcon },
   { href: "/compare", label: "Compare", short: "Compare", Icon: CompareIcon },
   { href: "/analyze", label: "Analyze", short: "Analyze", Icon: ChartIcon },
   { href: "/retro", label: "Pixel ★", short: "Pixel", Icon: PixelIcon, temp: true },
 ];
 
-const MOBILE_NAV = NAV.filter((item) => item.href !== "/" && !item.temp);
+/** Mobile bar: Box, GO search, Teams, Analyze (Compare stays desktop-only). */
+const MOBILE_NAV = NAV.filter(
+  (item) =>
+    item.href !== "/" &&
+    !item.temp &&
+    item.href !== "/compare",
+);
 
 function useIsActive() {
   const pathname = usePathname() ?? "/";
