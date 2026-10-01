@@ -48,6 +48,12 @@ export const IV_PRESETS: IvPreset[] = [
     query: "1attack&4defense&4hp",
   },
   {
+    id: "1-3-3",
+    label: "1–5 / 11–14 / 11–14",
+    hint: "Low Atk · mid Def & HP bands",
+    query: "1attack&3defense&3hp",
+  },
+  {
     id: "1-4-3",
     label: "1–5 / 15 / 11–14",
     hint: "Low Atk · 15 Def · mid HP",
@@ -103,7 +109,7 @@ export type DexUnionResult = {
 export function unionTopDex(
   lists: RoleRankLists,
   gm: GameMaster,
-  limitPerRole = 50,
+  limitPerRole = 100,
 ): DexUnionResult {
   const dexMap = buildDexMap(gm);
   const seen = new Set<number>();

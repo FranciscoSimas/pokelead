@@ -11,7 +11,7 @@ import {
   type IvPreset,
 } from "@/lib/pogoSearch";
 
-const TOP_N = 50;
+const TOP_N = 100;
 
 function CopyButton({
   text,
@@ -80,10 +80,12 @@ function SearchBlock({
 function IvRow({
   preset,
   speciesQuery,
+  formatLabel,
   loading,
 }: {
   preset: IvPreset;
   speciesQuery: string;
+  formatLabel: string;
   loading: boolean;
 }) {
   const combined = buildSearch(speciesQuery, preset.query);
@@ -99,11 +101,16 @@ function IvRow({
           <CopyButton text={preset.query} label="IV only" disabled={loading} />
           <CopyButton
             text={combined}
-            label="Species + IV"
+            label="Meta + IV"
             disabled={loading || !speciesQuery}
           />
         </div>
       </div>
+      {combined ? (
+        <p className="mt-2 line-clamp-2 break-all font-mono text-[10px] leading-relaxed text-faint">
+          Meta + IV ({formatLabel}): {combined}
+        </p>
+      ) : null}
     </li>
   );
 }
@@ -166,18 +173,22 @@ export default function SearchPage() {
         <>
           <section className="space-y-3">
             <div>
-              <h2 className="text-lg font-bold text-white">Species (top {TOP_N} roles)</h2>
+              <h2 className="text-lg font-bold text-white">Meta species list</h2>
               <p className="mt-1 text-xs text-muted">
-                Unique Pokédex numbers from top {TOP_N} Overall + Lead + Switch + Closer
+                National Pokédex numbers of every unique species in the top {TOP_N} of{" "}
+                <span className="text-fg">Overall</span>, <span className="text-fg">Lead</span>,{" "}
+                <span className="text-fg">Switch</span>, and <span className="text-fg">Closer</span>{" "}
+                for this format
                 {union
-                  ? ` · ${union.dexNumbers.length} species (${union.sourceCount} rank slots)`
+                  ? ` · ${union.dexNumbers.length} unique #s from ${union.sourceCount} rank slots`
                   : ""}
-                .
+                . In GO, commas mean OR — so this string shows any of those families in your
+                storage.
               </p>
             </div>
             <SearchBlock
-              title={`${format.label} — dex list`}
-              subtitle="Paste alone to see those families in your GO box. Dex matches all forms of that number."
+              title={`${format.label} — Pokédex # list`}
+              subtitle="Example: 184 = Azumarill. Same # matches all forms (regionals, etc.). Shadows share the dex."
               value={speciesQuery}
               loading={loading}
             />
@@ -187,8 +198,9 @@ export default function SearchPage() {
             <div>
               <h2 className="text-lg font-bold text-white">IV band presets</h2>
               <p className="mt-1 text-xs text-muted">
-                PoGo bands: 0 = 0 · 1 = 1–5 · 2 = 6–10 · 3 = 11–14 · 4 = 15. Use{" "}
-                <span className="text-fg">Species + IV</span> to AND with the list above.
+                PoGo bands: 0 = 0 · 1 = 1–5 · 2 = 6–10 · 3 = 11–14 · 4 = 15.{" "}
+                <span className="text-fg">Meta + IV</span> copies the list above AND this
+                row&apos;s IVs (top-meta species with those IV bands).
               </p>
             </div>
             <ul className="space-y-2">
@@ -197,6 +209,7 @@ export default function SearchPage() {
                   key={preset.id}
                   preset={preset}
                   speciesQuery={speciesQuery}
+                  formatLabel={format.label}
                   loading={loading}
                 />
               ))}
@@ -210,6 +223,11 @@ export default function SearchPage() {
                 Dex search includes all forms of that number (regionals, etc.). Shadows share the
                 same dex — add <code className="text-fg">&amp;shadow</code> or{" "}
                 <code className="text-fg">!shadow</code> if you need to narrow.
+              </li>
+              <li>
+                Top {TOP_N} per role is usually a few hundred characters after dedupe — fine to
+                paste in GO. If a string ever truncates on your device, copy Meta alone then AND
+                the IV filter separately.
               </li>
               <li>
                 IV bands are approximate; some strong PvP spreads sit outside a single preset.

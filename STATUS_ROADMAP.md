@@ -92,7 +92,7 @@ Critério de done: tu próprio abres a Box e **não** queres esconder os filtros
 | **Include Evos / Powered (Teams)** | ✅ Done: separate EVOs + Powered toggles |
 | **Top 3 favoritos** (onboarding / settings) | ✅ Theme from #1 type (Home + Account); not in score |
 | **Build around favorite** | ❌ Skip — não vamos fazer |
-| **Find in GO (search strings)** | ✅ Top-50 role dex union + IV band presets → copy/paste in PoGo |
+| **Find in GO (search strings)** | ✅ Top-100 role dex union + IV band presets → copy/paste in PoGo |
 | **Keep / invest / transfer** por cup | Badge na card da box ← **próximo** |
 | **XL + Best Buddy no IV rank** | ✅ L51 + buddy cap wired |
 | **Mesma espécie: qual guardar?** | Comparar N Blastoise na box (junto com keep/invest) |
