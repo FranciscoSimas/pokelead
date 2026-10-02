@@ -1,14 +1,19 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { FormatSelect } from "@/components/FormatSelect";
 import { RankingsSkeleton } from "@/components/RankingsSkeleton";
 import { useFormatRankings } from "@/hooks/useFormatRankings";
 import {
-  IV_PRESETS,
+  POGO_SEARCH_LANGS,
   buildSearch,
+  presetsForLang,
+  readPogoSearchLang,
+  shadowKeyword,
   unionTopDex,
+  writePogoSearchLang,
   type IvPreset,
+  type PogoSearchLang,
 } from "@/lib/pogoSearch";
 
 const TOP_N = 100;
@@ -44,6 +49,46 @@ function CopyButton({
     >
       {copied ? "Copied" : label}
     </button>
+  );
+}
+
+function LangToggle({
+  value,
+  onChange,
+}: {
+  value: PogoSearchLang;
+  onChange: (lang: PogoSearchLang) => void;
+}) {
+  return (
+    <div>
+      <p className="label">Game language</p>
+      <div
+        className="mt-1.5 inline-flex rounded-full border border-line bg-surface-2 p-0.5"
+        role="group"
+        aria-label="Pokémon GO client language"
+      >
+        {POGO_SEARCH_LANGS.map((opt) => {
+          const on = opt.id === value;
+          return (
+            <button
+              key={opt.id}
+              type="button"
+              aria-pressed={on}
+              onClick={() => onChange(opt.id)}
+              className={`min-h-9 rounded-full px-3.5 text-xs font-bold transition ${
+                on ? "bg-accent text-ink" : "text-muted hover:text-white"
+              }`}
+            >
+              {opt.short}
+              <span className="ml-1 hidden font-semibold sm:inline">{opt.label}</span>
+            </button>
+          );
+        })}
+      </div>
+      <p className="mt-1 text-[10px] text-faint">
+        Must match your Pokémon GO app language (IV keywords differ).
+      </p>
+    </div>
   );
 }
 
@@ -129,7 +174,19 @@ export default function SearchPage() {
     loadingRanks,
   } = useFormatRankings();
 
+  const [lang, setLang] = useState<PogoSearchLang>("pt");
+  useEffect(() => {
+    setLang(readPogoSearchLang());
+  }, []);
+
+  function onLang(next: PogoSearchLang) {
+    setLang(next);
+    writePogoSearchLang(next);
+  }
+
   const loading = loadingGm || loadingRanks || !gm;
+  const presets = useMemo(() => presetsForLang(lang), [lang]);
+  const shadow = shadowKeyword(lang);
 
   const union = useMemo(() => {
     if (!gm || loadingRanks) return null;
@@ -150,7 +207,8 @@ export default function SearchPage() {
         </p>
       </div>
 
-      <div className="relative z-30 flex flex-col gap-3 sm:flex-row sm:items-end sm:gap-4">
+      <div className="relative z-30 flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-end sm:gap-5">
+        <LangToggle value={lang} onChange={onLang} />
         <div className="relative z-10 shrink-0">
           <FormatSelect formats={formats} value={formatId} onChange={setFormatId} />
         </div>
@@ -182,13 +240,12 @@ export default function SearchPage() {
                 {union
                   ? ` · ${union.dexNumbers.length} unique #s from ${union.sourceCount} rank slots`
                   : ""}
-                . In GO, commas mean OR — so this string shows any of those families in your
-                storage.
+                . Dex numbers work in every language. In GO, commas mean OR.
               </p>
             </div>
             <SearchBlock
               title={`${format.label} — Pokédex # list`}
-              subtitle="Example: 184 = Azumarill. Same # matches all forms (regionals, etc.). Shadows share the dex."
+              subtitle="Example: 184 = Azumarill (183 = Marill). Same # matches all forms. Shadows share the dex."
               value={speciesQuery}
               loading={loading}
             />
@@ -198,13 +255,13 @@ export default function SearchPage() {
             <div>
               <h2 className="text-lg font-bold text-white">IV band presets</h2>
               <p className="mt-1 text-xs text-muted">
-                PoGo bands: 0 = 0 · 1 = 1–5 · 2 = 6–10 · 3 = 11–14 · 4 = 15.{" "}
-                <span className="text-fg">Meta + IV</span> copies the list above AND this
-                row&apos;s IVs (top-meta species with those IV bands).
+                Bands: 0 = 0 · 1 = 1–5 · 2 = 6–10 · 3 = 11–14 · 4 = 15. Keywords follow{" "}
+                <span className="text-fg">{lang === "pt" ? "PT (ataque/defesa/ps)" : "EN (attack/defense/hp)"}</span>
+                . <span className="text-fg">Meta + IV</span> = meta list AND this row&apos;s IVs.
               </p>
             </div>
             <ul className="space-y-2">
-              {IV_PRESETS.map((preset) => (
+              {presets.map((preset) => (
                 <IvRow
                   key={preset.id}
                   preset={preset}
@@ -220,14 +277,13 @@ export default function SearchPage() {
             <p className="font-semibold text-fg">Notes</p>
             <ul className="mt-1.5 list-disc space-y-1 pl-4">
               <li>
-                Dex search includes all forms of that number (regionals, etc.). Shadows share the
-                same dex — add <code className="text-fg">&amp;shadow</code> or{" "}
-                <code className="text-fg">!shadow</code> if you need to narrow.
+                Dex search includes all forms of that number. Shadows share the same dex — add{" "}
+                <code className="text-fg">&amp;{shadow}</code> or{" "}
+                <code className="text-fg">!{shadow}</code> if you need to narrow.
               </li>
               <li>
-                Top {TOP_N} per role is usually a few hundred characters after dedupe — fine to
-                paste in GO. If a string ever truncates on your device, copy Meta alone then AND
-                the IV filter separately.
+                Top {TOP_N} per role is usually fine to paste in GO after dedupe. If a string ever
+                truncates, copy Meta alone then AND the IV filter separately.
               </li>
               <li>
                 IV bands are approximate; some strong PvP spreads sit outside a single preset.

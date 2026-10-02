@@ -1,71 +1,178 @@
 import type { GameMaster } from "./pvpoke";
 import type { RankEntry } from "./types";
 
-export type IvPreset = {
+/** Matches the Pokémon GO client language (search keywords are localized). */
+export type PogoSearchLang = "en" | "pt";
+
+export const POGO_SEARCH_LANGS: { id: PogoSearchLang; label: string; short: string }[] = [
+  { id: "pt", label: "Português", short: "PT" },
+  { id: "en", label: "English", short: "EN" },
+];
+
+const STORAGE_KEY = "pokelead-pogo-search-lang";
+
+export function readPogoSearchLang(): PogoSearchLang {
+  if (typeof window === "undefined") return "pt";
+  try {
+    const v = localStorage.getItem(STORAGE_KEY);
+    if (v === "en" || v === "pt") return v;
+  } catch {
+    /* private mode */
+  }
+  return "pt";
+}
+
+export function writePogoSearchLang(lang: PogoSearchLang): void {
+  if (typeof window === "undefined") return;
+  try {
+    localStorage.setItem(STORAGE_KEY, lang);
+  } catch {
+    /* private mode */
+  }
+}
+
+/** Localized IV / HP stat keywords used in GO storage search. */
+const STAT = {
+  en: { attack: "attack", defense: "defense", hp: "hp" },
+  pt: { attack: "ataque", defense: "defesa", hp: "ps" },
+} as const;
+
+type StatKey = keyof (typeof STAT)["en"];
+
+/** Band fragment like "0-1" or "4" for one stat. */
+type BandFrag = { band: string; stat: StatKey };
+
+export type IvPresetDef = {
   id: string;
   label: string;
   hint: string;
-  /** Valid Pokémon GO IV-band search fragment */
-  query: string;
+  /** Ordered Atk / Def / HP band fragments (joined with &). */
+  bands: [BandFrag, BandFrag, BandFrag];
 };
 
-/** Common PvP IV band filters (Atk / Def / HP bands 0–4). */
-export const IV_PRESETS: IvPreset[] = [
+/**
+ * Common PvP IV band filters.
+ * Bands: 0=0 · 1=1–5 · 2=6–10 · 3=11–14 · 4=15
+ * Verified against Niantic help + GO Hub (EN attack/defense/hp, PT ataque/defesa/ps).
+ */
+export const IV_PRESET_DEFS: IvPresetDef[] = [
   {
     id: "classic-bulk",
     label: "Classic bulk",
     hint: "0–5 Atk · 11–15 Def/HP — most GL/UL picks",
-    query: "0-1attack&3-4defense&3-4hp",
+    bands: [
+      { band: "0-1", stat: "attack" },
+      { band: "3-4", stat: "defense" },
+      { band: "3-4", stat: "hp" },
+    ],
   },
   {
     id: "0-4-4",
     label: "0 / 15 / 15",
     hint: "0 Atk · 15 Def · 15 HP",
-    query: "0attack&4defense&4hp",
+    bands: [
+      { band: "0", stat: "attack" },
+      { band: "4", stat: "defense" },
+      { band: "4", stat: "hp" },
+    ],
   },
   {
     id: "0-3-3",
     label: "0 / 11–14 / 11–14",
     hint: "0 Atk · high Def & HP bands",
-    query: "0attack&3defense&3hp",
+    bands: [
+      { band: "0", stat: "attack" },
+      { band: "3", stat: "defense" },
+      { band: "3", stat: "hp" },
+    ],
   },
   {
     id: "0-3-4",
     label: "0 / 11–14 / 15",
     hint: "0 Atk · mid Def · 15 HP",
-    query: "0attack&3defense&4hp",
+    bands: [
+      { band: "0", stat: "attack" },
+      { band: "3", stat: "defense" },
+      { band: "4", stat: "hp" },
+    ],
   },
   {
     id: "0-4-3",
     label: "0 / 15 / 11–14",
     hint: "0 Atk · 15 Def · mid HP",
-    query: "0attack&4defense&3hp",
+    bands: [
+      { band: "0", stat: "attack" },
+      { band: "4", stat: "defense" },
+      { band: "3", stat: "hp" },
+    ],
   },
   {
     id: "1-4-4",
     label: "1–5 / 15 / 15",
     hint: "Low Atk · perfect Def/HP",
-    query: "1attack&4defense&4hp",
+    bands: [
+      { band: "1", stat: "attack" },
+      { band: "4", stat: "defense" },
+      { band: "4", stat: "hp" },
+    ],
   },
   {
     id: "1-3-3",
     label: "1–5 / 11–14 / 11–14",
     hint: "Low Atk · mid Def & HP bands",
-    query: "1attack&3defense&3hp",
+    bands: [
+      { band: "1", stat: "attack" },
+      { band: "3", stat: "defense" },
+      { band: "3", stat: "hp" },
+    ],
   },
   {
     id: "1-4-3",
     label: "1–5 / 15 / 11–14",
     hint: "Low Atk · 15 Def · mid HP",
-    query: "1attack&4defense&3hp",
+    bands: [
+      { band: "1", stat: "attack" },
+      { band: "4", stat: "defense" },
+      { band: "3", stat: "hp" },
+    ],
   },
   {
     id: "hundo",
     label: "Hundo 15/15/15",
     hint: "Perfect IVs (4★)",
-    query: "4attack&4defense&4hp",
+    bands: [
+      { band: "4", stat: "attack" },
+      { band: "4", stat: "defense" },
+      { band: "4", stat: "hp" },
+    ],
   },
 ];
+
+export type IvPreset = {
+  id: string;
+  label: string;
+  hint: string;
+  query: string;
+};
+
+export function ivQueryFor(def: IvPresetDef, lang: PogoSearchLang): string {
+  const words = STAT[lang];
+  return def.bands.map((b) => `${b.band}${words[b.stat]}`).join("&");
+}
+
+export function presetsForLang(lang: PogoSearchLang): IvPreset[] {
+  return IV_PRESET_DEFS.map((def) => ({
+    id: def.id,
+    label: def.label,
+    hint: def.hint,
+    query: ivQueryFor(def, lang),
+  }));
+}
+
+/** Shadow keyword in GO search (localized). */
+export function shadowKeyword(lang: PogoSearchLang): string {
+  return lang === "pt" ? "sombra" : "shadow";
+}
 
 const ROLE_KEYS = ["overall", "leads", "switches", "closers"] as const;
 
@@ -105,6 +212,7 @@ export type DexUnionResult = {
 /**
  * Union unique national dex from top N of overall + leads + switches + closers.
  * First appearance wins (overall fills first, then other roles).
+ * Dex numbers are language-agnostic (national Pokédex).
  */
 export function unionTopDex(
   lists: RoleRankLists,
