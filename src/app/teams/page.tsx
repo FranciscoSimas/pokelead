@@ -10,6 +10,7 @@ import {
   filterBoxForFormat,
   minCpForLeague,
   physicalBoxId,
+  speciesKey,
   suggestTeams,
   type RoleScores,
   type SuggestedTeam,
@@ -112,25 +113,44 @@ export default function TeamsPage() {
     const switches = lists.switches;
     const closers = lists.closers;
     startTransition(() => {
+      const args = [
+        overall,
+        leads,
+        switches,
+        closers,
+        20,
+        format,
+        cups,
+        statsMap,
+        typeMap,
+        moveLookup,
+        movePools,
+      ] as const;
+
+      // EVOs/Powered must be a search superset: never drop the base-box best.
+      const base = suggestTeams(box, ...args);
+      if (!includeEvos && !includePower) {
+        setTeams(base);
+        return;
+      }
+      const expanded = suggestTeams(workingBox, ...args);
+      const byKey = new Map<string, SuggestedTeam>();
+      for (const t of [...base, ...expanded]) {
+        const key = [speciesKey(t.lead), speciesKey(t.switchMon), speciesKey(t.closer)]
+          .sort()
+          .join("|");
+        const prev = byKey.get(key);
+        if (!prev || t.score > prev.score) byKey.set(key, t);
+      }
       setTeams(
-        suggestTeams(
-          workingBox,
-          overall,
-          leads,
-          switches,
-          closers,
-          20,
-          format,
-          cups,
-          statsMap,
-          typeMap,
-          moveLookup,
-          movePools,
-        ),
+        [...byKey.values()].sort((a, b) => b.score - a.score).slice(0, 20),
       );
     });
   }, [
+    box,
     workingBox,
+    includeEvos,
+    includePower,
     ranksReady,
     lists.overall,
     lists.leads,

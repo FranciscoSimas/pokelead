@@ -253,7 +253,7 @@ export function projectEvoCandidate(
 
 /**
  * Final-form mon that can still power up under the league cap:
- * replace at league-max CP (same id) with Power invest metadata.
+ * league-max CP projection with Power invest metadata (id `${mon.id}::power`).
  *
  * Skip when the box CP is already the league max for these IVs (including
  * 1-CP calc vs in-game mismatches) or when no half-level remains under the cap.
@@ -323,6 +323,7 @@ export function projectPowerCandidate(
 
   return {
     ...mon,
+    id: `${mon.id}::power`,
     cp: ranked.cp,
     level: ranked.level,
     tags: [...(mon.tags ?? []).filter((t) => t !== "Evo" && t !== "Power"), "Power"],
@@ -334,7 +335,7 @@ export function projectPowerCandidate(
 /**
  * Working box for Teams:
  * - includeEvos: add leaf evolution projections from pre-evos at league max
- * - includePower: replace final forms with league-max CP when they can still power up
+ * - includePower: keep current final forms and add league-max Power projections alongside
  */
 export function expandBoxWithEvos(
   box: BoxPokemon[],
@@ -375,11 +376,10 @@ export function expandBoxWithEvos(
       continue;
     }
 
+    out.push(mon);
     if (includePower) {
       const powered = projectPowerCandidate(mon, currentGm, format);
-      out.push(powered ?? mon);
-    } else {
-      out.push(mon);
+      if (powered) extras.push(powered);
     }
   }
 

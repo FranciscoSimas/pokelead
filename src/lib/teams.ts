@@ -288,8 +288,12 @@ export function suggestTeams(
     (a, b) => a.switchRank - b.switchRank || b.power - a.power,
   );
   const byCloser = [...scored].sort((a, b) => a.closer - b.closer || b.power - a.power);
-  // Wider role windows for larger topN without exploding to topN³.
-  const window = Math.min(14, Math.max(10, Math.ceil(topN * 0.6)));
+  // Scale with pool size so EVOs/Powered expansions don't crowd out the base best.
+  // Cap keeps the cartesian product tractable (~22³).
+  const window = Math.min(
+    22,
+    Math.max(12, Math.ceil(Math.cbrt(Math.max(scored.length, 1)) * 4.2)),
+  );
 
   for (const lead of byLead.slice(0, window)) {
     for (const sw of bySwitch.slice(0, window)) {
