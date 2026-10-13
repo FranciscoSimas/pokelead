@@ -252,8 +252,8 @@ export function projectEvoCandidate(
 }
 
 /**
- * Final-form mon that can still power up under the league cap:
- * league-max CP projection with Power invest metadata (id `${mon.id}::power`).
+ * Same species, powered to the highest CP still under the league cap
+ * (id `${mon.id}::power`). Used for every box mon, including pre-evolutions.
  *
  * Skip when the box CP is already the league max for these IVs (including
  * 1-CP calc vs in-game mismatches) or when no half-level remains under the cap.
@@ -335,7 +335,8 @@ export function projectPowerCandidate(
 /**
  * Working box for Teams:
  * - includeEvos: add leaf evolution projections from pre-evos at league max
- * - includePower: keep current final forms and add league-max Power projections alongside
+ * - includePower: keep every mon as-is and also add a same-species projection
+ *   powered to the highest CP still under this league cap (pre-evos included)
  */
 export function expandBoxWithEvos(
   box: BoxPokemon[],
@@ -365,21 +366,16 @@ export function expandBoxWithEvos(
       (t) => baseSpeciesId(t.speciesId) !== baseSpeciesId(mon.speciesId),
     );
 
-    if (leaves.length > 0) {
-      out.push(mon);
-      if (includeEvos) {
-        for (const target of leaves) {
-          const projected = projectEvoCandidate(mon, currentGm, target, format);
-          if (projected) extras.push(projected);
-        }
-      }
-      continue;
-    }
-
     out.push(mon);
     if (includePower) {
       const powered = projectPowerCandidate(mon, currentGm, format);
       if (powered) extras.push(powered);
+    }
+    if (includeEvos && leaves.length > 0) {
+      for (const target of leaves) {
+        const projected = projectEvoCandidate(mon, currentGm, target, format);
+        if (projected) extras.push(projected);
+      }
     }
   }
 

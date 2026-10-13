@@ -140,10 +140,24 @@ export default function TeamsPage() {
           .sort()
           .join("|");
         const prev = byKey.get(key);
-        if (!prev || t.score > prev.score) byKey.set(key, t);
+        if (
+          !prev ||
+          t.score > prev.score ||
+          (t.score === prev.score &&
+            t.lead.cp + t.switchMon.cp + t.closer.cp >
+              prev.lead.cp + prev.switchMon.cp + prev.closer.cp)
+        ) {
+          byKey.set(key, t);
+        }
       }
       setTeams(
-        [...byKey.values()].sort((a, b) => b.score - a.score).slice(0, 20),
+        [...byKey.values()]
+          .sort(
+            (a, b) =>
+              b.score - a.score ||
+              b.lead.cp + b.switchMon.cp + b.closer.cp - (a.lead.cp + a.switchMon.cp + a.closer.cp),
+          )
+          .slice(0, 20),
       );
     });
   }, [
@@ -385,7 +399,10 @@ export default function TeamsPage() {
               />
               EVOs
             </label>
-            <label className="flex min-h-11 cursor-pointer items-center gap-2 rounded-full border border-line bg-surface-2 px-3.5 py-2 text-sm text-sky-100/90">
+            <label
+              title="Assume each Pokémon powered up to this league’s CP cap, without evolving"
+              className="flex min-h-11 cursor-pointer items-center gap-2 rounded-full border border-line bg-surface-2 px-3.5 py-2 text-sm text-sky-100/90"
+            >
               <input
                 type="checkbox"
                 checked={includePower}

@@ -246,6 +246,10 @@ export function statsFor(b: BoxPokemon, stats: StatsMap | undefined): BaseStats 
   return stats[b.speciesId];
 }
 
+function cpSum(t: { lead: BoxPokemon; switchMon: BoxPokemon; closer: BoxPokemon }): number {
+  return t.lead.cp + t.switchMon.cp + t.closer.cp;
+}
+
 export function suggestTeams(
   box: BoxPokemon[],
   overall: RankEntry[],
@@ -323,7 +327,7 @@ export function suggestTeams(
     }
   }
 
-  teams.sort((a, b) => b.score - a.score);
+  teams.sort((a, b) => b.score - a.score || cpSum(b) - cpSum(a));
   const seen = new Set<string>();
   const unique: SuggestedTeam[] = [];
   for (const t of teams) {

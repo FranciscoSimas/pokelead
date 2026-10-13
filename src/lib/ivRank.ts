@@ -60,7 +60,8 @@ export function leagueShortName(cp: LeagueCp): string {
 
 /** CP cap + default level cap (without Best Buddy) for bulk IV ranking in a format. */
 export function ivRankParams(formatCp: number): { cap: LeagueCp; maxLevel: number } {
-  if (formatCp <= 500) return { cap: 500, maxLevel: 15 };
+  // Little Cup is ≤500 CP, not a level-15 cap — power up until CP would pass 500.
+  if (formatCp <= 500) return { cap: 500, maxLevel: 50 };
   if (formatCp <= 1500) return { cap: 1500, maxLevel: 50 };
   if (formatCp <= 2500) return { cap: 2500, maxLevel: 50 };
   return { cap: 10000, maxLevel: 50 };
@@ -68,7 +69,7 @@ export function ivRankParams(formatCp: number): { cap: LeagueCp; maxLevel: numbe
 
 /**
  * Level cap for a specific box mon in a format.
- * Best Buddy unlocks L51 (except Little Cup, which stays at the format cap).
+ * Best Buddy unlocks L51 when the format already allows L50.
  */
 export function monLevelCap(formatCp: number, bestBuddy = false): number {
   const { maxLevel } = ivRankParams(formatCp);
