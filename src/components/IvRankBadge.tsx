@@ -4,8 +4,16 @@ import type { IvRankResult } from "@/lib/ivRank";
 import { leagueShortName } from "@/lib/ivRank";
 
 function pctTitle(result: IvRankResult) {
+  const league = leagueShortName(result.league);
+  if (result.league === 500) {
+    return (
+      `Little Cup scores every IV spread at the same level, so 15/15/15 is #1. ` +
+      `This spread is ${result.pctOfBest}% of 15/15/15. Rank #${result.rank} of 4096. ` +
+      `#1 IVs = ${result.bestIvs.join("/")}.`
+    );
+  }
   return (
-    `Bulk score is ${result.pctOfBest}% of the #1 IV spread for this species in ${leagueShortName(result.league)}. ` +
+    `Bulk score is ${result.pctOfBest}% of the #1 IV spread for this species in ${league}. ` +
     `Rank #${result.rank} of 4096 IV combinations (0-15). ` +
     `#1 IVs = ${result.bestIvs.join("/")}.`
   );
@@ -56,14 +64,16 @@ export function IvRankBadge({
         <span className="text-sm font-semibold opacity-70"> / 4096</span>
       </p>
       <p className="text-[11px] opacity-80">
-        {result.pctOfBest}% bulk vs #1 · L{result.level} · {result.cp} CP
+        {result.pctOfBest}% vs #1 · L{result.level} · {result.cp} CP
       </p>
       <p className="mt-0.5 text-[11px] font-semibold opacity-90">
         {ideal}
         {result.league === 10000 ? " (Master League, max IVs)" : ""}
       </p>
       <p className="mt-1 text-[10px] leading-snug opacity-55">
-        % = your stat product vs the best IV spread under the CP cap (not “% of players beaten”).
+        {result.league === 500
+          ? "% = this spread vs 15/15/15 at the same level (not a low-Attack bulk build)."
+          : "% = your stat product vs the best IV spread under the CP cap (not “% of players beaten”)."}
       </p>
     </div>
   );

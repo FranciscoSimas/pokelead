@@ -58,9 +58,9 @@ export function leagueShortName(cp: LeagueCp): string {
   return "ML";
 }
 
-/** CP cap + default level cap (without Best Buddy) for bulk IV ranking in a format. */
+/** CP cap + default level cap (without Best Buddy) for IV ranking in a format. */
 export function ivRankParams(formatCp: number): { cap: LeagueCp; maxLevel: number } {
-  // Little Cup is ≤500 CP, not a level-15 cap — power up until CP would pass 500.
+  // Little Cup: power up under 500 CP. IV rank itself is not a bulk search — see rankIvSpread.
   if (formatCp <= 500) return { cap: 500, maxLevel: 50 };
   if (formatCp <= 1500) return { cap: 1500, maxLevel: 50 };
   if (formatCp <= 2500) return { cap: 2500, maxLevel: 50 };
@@ -212,11 +212,20 @@ function bestUnderCap(
 }
 
 /**
- * Rank IV spread among all 4096 by max stat product under the league CP cap.
- * Also reports % of the #1 product (closer to how PvP sites talk about “99% IVs”).
+ * Little Cup does not reward a bulk (low Attack) build. Every spread is scored at the
+ * same level: the highest where 15/15/15 is still ≤500 CP. At that level, 15/15/15 is #1.
+ */
+function littleCupCompareLevel(base: BaseStats, maxLevel: number): number {
+  return bestUnderCap(base, 15, 15, 15, 500, maxLevel).level;
+}
+
+/**
+ * Rank IV spread among all 4096.
+ * GL/UL: max stat product under the CP cap (bulk). Master: max level, so 15/15/15.
+ * Little Cup: same level for every spread, so 15/15/15.
  *
- * Builds one product table per base stats + league (shared across IV spreads of the
- * same species), then caches individual results.
+ * Also reports % of the #1 product.
+ * Builds one product table per base stats + league, then caches individual results.
  */
 type ProductTable = {
   /** index = atk*256 + def*16 + hp */
@@ -230,7 +239,8 @@ const ivRankCache = new Map<string, IvRankResult>();
 const IV_RANK_CACHE_MAX = 8000;
 
 function tableKey(base: BaseStats, cp: LeagueCp, maxLevel: number): string {
-  return `${base.atk},${base.def},${base.hp}|${cp}|${maxLevel}`;
+  const mode = cp === 500 ? "lc15" : "bulk";
+  return `${base.atk},${base.def},${base.hp}|${cp}|${maxLevel}|${mode}`;
 }
 
 function getProductTable(base: BaseStats, cp: LeagueCp, maxLevel: number): ProductTable {
@@ -240,13 +250,17 @@ function getProductTable(base: BaseStats, cp: LeagueCp, maxLevel: number): Produ
 
   const products = new Int32Array(4096);
   let bestSp = 0;
-  let bestIvs: [number, number, number] = [0, 15, 15];
+  let bestIvs: [number, number, number] = cp === 500 ? [15, 15, 15] : [0, 15, 15];
+  const littleLevel = cp === 500 ? littleCupCompareLevel(base, maxLevel) : 0;
   for (let a = 0; a <= 15; a++) {
     for (let d = 0; d <= 15; d++) {
       for (let h = 0; h <= 15; h++) {
-        const sp = bestUnderCap(base, a, d, h, cp, maxLevel).statProduct;
+        const sp =
+          cp === 500
+            ? calcStatProduct(base, a, d, h, littleLevel)
+            : bestUnderCap(base, a, d, h, cp, maxLevel).statProduct;
         products[(a << 8) | (d << 4) | h] = sp;
-        if (sp > bestSp) {
+        if (sp >= bestSp) {
           bestSp = sp;
           bestIvs = [a, d, h];
         }
@@ -279,7 +293,13 @@ export function rankIvSpread(
   for (let i = 0; i < 4096; i++) {
     if (table.products[i] > mineSp) better++;
   }
-  const mine = bestUnderCap(base, a, d, h, cp, maxLevel);
+  const mine =
+    cp === 500
+      ? (() => {
+          const level = littleCupCompareLevel(base, maxLevel);
+          return { level, cp: calcCp(base, a, d, h, level) };
+        })()
+      : bestUnderCap(base, a, d, h, cp, maxLevel);
   const rank = better + 1;
   const percentile = Math.round(((4096 - better) / 4096) * 1000) / 10;
   const pctOfBest =

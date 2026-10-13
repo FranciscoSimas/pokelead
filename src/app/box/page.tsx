@@ -761,7 +761,7 @@ export default function BoxPage() {
                     label: leagueShortName(c),
                     title:
                       c === 500
-                        ? "Little Cup, ≤500 CP"
+                        ? "Little Cup, 15/15/15"
                         : c === 10000
                           ? "Master League, #1 is 15/15/15"
                           : `${c} CP cap`,

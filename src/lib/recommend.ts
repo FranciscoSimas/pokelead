@@ -52,7 +52,7 @@ function ivKey(cp: number): string {
   return "cp10000";
 }
 
-/** Bulk #1 IVs under the league CP cap (same as IV rank badge). Cached per species. */
+/** Rank-1 IVs for this league (Little Cup: 15/15/15; GL/UL: bulk under the cap). Cached per species. */
 const bulkIvCache = new Map<string, [number, number, number]>();
 
 function idealIvs(p: GmPokemon, leagueCp: number): [number, number, number] {
